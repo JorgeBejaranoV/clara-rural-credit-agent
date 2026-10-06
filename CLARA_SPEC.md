@@ -1,6 +1,6 @@
 # Clara · Rural credit pre-screening agent — technical specification
 
-System: "Crédito rural por voz" for Banco Agrario (demo for a Solutions Engineer take-home).
+System: "Crédito rural por voz" for Banco Agrario (demo, not a production system).
 Last verified against live configuration on 2026-10-05, agent version `agtvrsn_0001m46kr4b9eyxbmek71mjpzg9j`.
 
 This document describes how the system is built and behaves. It is written so that someone can review or extend it without reading the raw JSON configuration.
