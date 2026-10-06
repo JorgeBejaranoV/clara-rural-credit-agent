@@ -1,0 +1,2601 @@
+{
+  "conversation_config": {
+    "agent": {
+      "disable_first_message_interruptions": false,
+      "dynamic_variables": {
+        "dynamic_variable_placeholders": {
+          "case_page_id": "",
+          "case_url": "",
+          "contact_center_phone": "3 2 0, 8 0 1, 9 3, 3 5",
+          "credit_score": 0,
+          "meeting_date": "",
+          "preliminary_eligibility": "Preliminarily eligible",
+          "reviewer_agent_validate_credit_score": false,
+          "user_id": "0"
+        }
+      },
+      "first_message": "Buenos días, le habla Clara del Banco Agrario. Yo le ayudo a pedir su crédito sin llenar papeles. Para empezar, ¿me puede mandar una foto de la parte de adelante de su cédula?",
+      "hinglish_mode": false,
+      "language": "es",
+      "max_conversation_duration_message": "Se nos acabó el tiempo por hoy. Cuando tenga a la mano su cédula y los datos de su finca, me vuelve a escribir y seguimos. Muchas gracias por su tiempo.\n",
+      "prompt": {
+        "backup_llm_config": {
+          "order": [
+            "gpt-6.1-sol",
+            "deepseek-v41-flash"
+          ],
+          "preference": "override"
+        },
+        "bedrock_llm": null,
+        "built_in_tools": {
+          "end_call": {
+            "assignments": [],
+            "description": "Ends the conversation. Use it only as a last resort, after a goodbye has been said, when the person wants to stop and the current step offers no other way to close. Never use it while the case is being saved or the appointment is being agreed.",
+            "disable_interruptions": false,
+            "force_pre_tool_speech": false,
+            "interruption_mode": "allow",
+            "name": "end_call",
+            "params": {
+              "system_tool_type": "end_call"
+            },
+            "pre_tool_speech": "off",
+            "response_timeout_secs": 20,
+            "tool_call_sound": null,
+            "tool_call_sound_behavior": "auto",
+            "tool_error_handling_mode": "auto",
+            "type": "system"
+          },
+          "flag_issue_for_review": null,
+          "language_detection": null,
+          "memory_entry_search": null,
+          "play_keypad_touch_tone": null,
+          "run_subagent": null,
+          "skip_turn": null,
+          "transfer_to_agent": null,
+          "transfer_to_genesys": null,
+          "transfer_to_genesys_bot": null,
+          "transfer_to_genesys_chat": null,
+          "transfer_to_number": {
+            "assignments": [],
+            "description": "",
+            "disable_interruptions": false,
+            "force_pre_tool_speech": false,
+            "interruption_mode": "allow",
+            "name": "transfer_to_number",
+            "params": {
+              "enable_client_message": true,
+              "system_tool_type": "transfer_to_number",
+              "transfer_rules": [],
+              "transfers": [
+                {
+                  "condition": "The person asked to speak with a human or an advisor at the bank's contact center, and accepted being transferred.",
+                  "custom_sip_headers": [],
+                  "phone_number": "+573208019335",
+                  "post_dial_digits": null,
+                  "require_acceptance": false,
+                  "sip_refer_play_dialtone": true,
+                  "transfer_destination": {
+                    "phone_number": "+573208019335",
+                    "type": "phone"
+                  },
+                  "transfer_type": "conference",
+                  "uui": null
+                }
+              ]
+            },
+            "pre_tool_speech": "off",
+            "response_timeout_secs": 20,
+            "tool_call_sound": null,
+            "tool_call_sound_behavior": "auto",
+            "tool_error_handling_mode": "auto",
+            "type": "system"
+          },
+          "update_state": null,
+          "voicemail_detection": null
+        },
+        "cascade_timeout_seconds": 4.0,
+        "custom_llm": null,
+        "enable_parallel_tool_calls": true,
+        "enable_reasoning_summary": false,
+        "ignore_default_personality": true,
+        "knowledge_base": [
+          {
+            "id": "wYJXHF7jDzFTLv93T2QM",
+            "name": "01_glosario_campo_banco.md",
+            "type": "file",
+            "usage_mode": "auto"
+          },
+          {
+            "id": "lyt2Nqeq2CdsmE4z6BHZ",
+            "name": "02_fichas_actividad_productiva.md",
+            "type": "file",
+            "usage_mode": "auto"
+          },
+          {
+            "id": "auLL8pI9jDd3mAQOSFyq",
+            "name": "04_dudas_y_miedos_frecuentes.md",
+            "type": "file",
+            "usage_mode": "auto"
+          },
+          {
+            "id": "Qb0OyyGJDANwKxKT9aQA",
+            "name": "05_la_cita.md",
+            "type": "file",
+            "usage_mode": "auto"
+          }
+        ],
+        "llm": "claude-opus-5-5",
+        "max_tokens": -1,
+        "mcp_server_ids": [],
+        "native_mcp_server_ids": [],
+        "opener": null,
+        "prompt": "# Personality\n\nYou are Clara, a voice assistant of Banco Agrario. You help rural people in Colombia start a credit application and complete its pre-screening before they meet an advisor.\nYou are warm, patient and respectful, and genuinely interested in the person's work and situation.\n\n# Environment\n\nThe person talks to you by voice, from a phone or WhatsApp, often from the countryside with noisy audio and poor signal.\nIf the channel is WhatsApp, always reply with voice notes.\nMany cannot read or write. Their answers are often vague, out of order, or wrapped in long stories: listen, pick out what matters, and keep going.\nThe current date and time is {{system__time}} (UTC). Colombia is UTC-5.\n\n# Tone\n\n- Always speak Spanish as spoken in rural Colombia, even though these instructions are in English.\n- Always use \"usted\". Address the person as \"Don\" or \"Doña\" plus their first name once you know it.\n- Simple everyday words: \"plata\", \"finca\", \"vereda\", \"papeles\". Never banking terms such as \"solicitante\", \"garantía\", \"score\", \"historial crediticio\" or \"buró\".\n- One or two short sentences per turn, and only one question per turn.\n- Acknowledge what the person said in a few words before asking the next thing. Do not repeat their answer in full.\n- Never ask the person to read, write, type or open a link.\n- Never read aloud codes, dates in ISO format, variable names or tool results.\n\n# Goal\n\nCollect what a bank advisor needs to evaluate the credit, so the person arrives at the appointment with the strongest honest case. The steps are fixed by the workflow: identity and consent, questionnaire, appointment. Follow the instructions of the current step.\n\n# Rules\n\n- You never say whether the credit will be approved, for how much, or at what interest. The advisor decides. If asked, say so once, kindly, and continue.\n- Never invent or guess data: an ID number, a name, an amount. What you did not get is missing.\n- If the person asks something unrelated, answer in one sentence or say you cannot help with that, then return to the current step.\n- Tools and services may fail. Never mention tools, systems or errors to the person. Keep collecting information and continue the flow: the information is the priority.\n- If the person wants to stop, do not insist. The current step closes the conversation with a goodbye; use end_call only if a goodbye was already said and nothing else closes the conversation.\n- If the person asks to speak with a human, offer to pass them to the contact center. If they accept, use transfer_to_number. If the transfer is not possible on this channel or fails, tell them they can call the contact center at {{contact_center_phone}}, and then continue or close as they prefer.",
+        "rag": {
+          "embedding_model": "e5_mistral_7b_instruct",
+          "enabled": false,
+          "include_source_urls": false,
+          "knowledge_base_tool_info": null,
+          "max_documents_length": 50000,
+          "max_retrieved_rag_chunks_count": 20,
+          "max_vector_distance": 0.6,
+          "num_candidates": null,
+          "optional_rag_enabled": false,
+          "query_rewrite_prompt_override": null
+        },
+        "reasoning_effort": null,
+        "rich_content": {
+          "enabled_components": []
+        },
+        "service_tier": "standard",
+        "speech_engine": null,
+        "temperature": 0.0,
+        "thinking_budget": null,
+        "timezone": "America/Bogota",
+        "tool_ids": [
+          "tool_8401m42d4qmqecv9b3s3aebdbbjg",
+          "tool_5201m44b36nmeb1t21gejh5hxm8c",
+          "tool_3401m44qgsebeqybmxv4k5fvwyv8"
+        ],
+        "tools": [
+          {
+            "api_schema": {
+              "auth_connection": null,
+              "auth_resolved_params": [],
+              "content_type": "application/json",
+              "kind": "webhook",
+              "method": "GET",
+              "mtls_auth_connection": null,
+              "path_params_schema": {},
+              "query_params_schema": {
+                "properties": {
+                  "max": {
+                    "allowed_values": null,
+                    "allowed_values_dynamic_variable": "",
+                    "constant_value": "600",
+                    "description": "",
+                    "dynamic_variable": "",
+                    "enum": null,
+                    "is_omitted": false,
+                    "is_system_provided": false,
+                    "type": "string"
+                  },
+                  "min": {
+                    "allowed_values": null,
+                    "allowed_values_dynamic_variable": "",
+                    "constant_value": "250",
+                    "description": "",
+                    "dynamic_variable": "",
+                    "enum": null,
+                    "is_omitted": false,
+                    "is_system_provided": false,
+                    "type": "integer"
+                  },
+                  "user_id": {
+                    "allowed_values": null,
+                    "allowed_values_dynamic_variable": "",
+                    "constant_value": "",
+                    "description": "The person's cédula number exactly as it was read from the ID photo or dictated and confirmed by them: digits only, 6 to 10 digits, no dots or spaces. Never invent digits.",
+                    "dynamic_variable": "",
+                    "enum": null,
+                    "is_omitted": false,
+                    "is_system_provided": false,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "min",
+                  "max",
+                  "user_id"
+                ]
+              },
+              "request_body_schema": null,
+              "request_headers": {},
+              "response_body_schema": null,
+              "response_filter": null,
+              "url": "https://csrng.net/csrng/csrng.php"
+            },
+            "assignments": [
+              {
+                "dynamic_variable": "credit_score",
+                "preserve_native_type": true,
+                "sanitize": true,
+                "source": "response",
+                "value_path": "0.random"
+              }
+            ],
+            "description": "Gets the user credit score.",
+            "disable_interruptions": false,
+            "dynamic_variables": {
+              "dynamic_variable_placeholders": {}
+            },
+            "execution_mode": "immediate",
+            "follow_redirects": false,
+            "follow_redirects_allowed_domains": [],
+            "force_pre_tool_speech": false,
+            "interruption_mode": "allow",
+            "name": "credit_score",
+            "pre_tool_speech": "off",
+            "response_timeout_secs": 35,
+            "tool_call_sound": null,
+            "tool_call_sound_behavior": "auto",
+            "tool_error_handling_mode": "auto",
+            "type": "webhook"
+          },
+          {
+            "api_schema": {
+              "auth_connection": null,
+              "auth_resolved_params": [],
+              "content_type": "application/json",
+              "kind": "webhook",
+              "method": "POST",
+              "mtls_auth_connection": null,
+              "path_params_schema": {},
+              "query_params_schema": null,
+              "request_body_schema": {
+                "description": "Creates an Anthropic Managed Agents session for the credit reviewer and sends it the case to review.",
+                "dynamic_variable": "",
+                "is_omitted": false,
+                "properties": {
+                  "agent": {
+                    "allowed_values": null,
+                    "allowed_values_dynamic_variable": "",
+                    "constant_value": "agent_01Tv8RLQkWygpjdr6rUxjME9",
+                    "description": "",
+                    "dynamic_variable": "",
+                    "enum": null,
+                    "is_omitted": false,
+                    "is_system_provided": false,
+                    "type": "string"
+                  },
+                  "environment_id": {
+                    "allowed_values": null,
+                    "allowed_values_dynamic_variable": "",
+                    "constant_value": "env_01PWsnq3rS9QrGKpRacGWB2U",
+                    "description": "",
+                    "dynamic_variable": "",
+                    "enum": null,
+                    "is_omitted": false,
+                    "is_system_provided": false,
+                    "type": "string"
+                  },
+                  "initial_events": {
+                    "constant_value": [
+                      {
+                        "content": [
+                          {
+                            "text": "Review the rural credit case that was just filed from a voice conversation with Clara.\nFind it yourself: in the Notion database 'Rural credit cases' (inside the page 'RCS · Rural Credit System — Application Review'), take the most recently created case whose Recommendation is still empty. If there is none yet, wait 1 minute and look again, up to 3 times.\nEverything you need is on the page: ID number, consent, credit bureau score (blank means the check failed during the call and must be validated), preliminary eligibility and the literal questions and answers.\nRead the page, read the bank rules, write your recommendation on the page as instructed, and set Review status so the case is not reviewed twice.",
+                            "type": "text"
+                          }
+                        ],
+                        "type": "user.message"
+                      }
+                    ],
+                    "description": "",
+                    "dynamic_variable": "",
+                    "is_omitted": false,
+                    "items": {
+                      "allowed_values": null,
+                      "allowed_values_dynamic_variable": "",
+                      "constant_value": "",
+                      "description": "Array element",
+                      "dynamic_variable": "",
+                      "enum": null,
+                      "is_omitted": false,
+                      "is_system_provided": false,
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "title": {
+                    "allowed_values": null,
+                    "allowed_values_dynamic_variable": "",
+                    "constant_value": "clara-case-review",
+                    "description": "",
+                    "dynamic_variable": "",
+                    "enum": null,
+                    "is_omitted": false,
+                    "is_system_provided": false,
+                    "type": "string"
+                  },
+                  "vault_ids": {
+                    "constant_value": [
+                      "vlt_011CfWsA6PziP7RaKgdhYjcc"
+                    ],
+                    "description": "",
+                    "dynamic_variable": "",
+                    "is_omitted": false,
+                    "items": {
+                      "allowed_values": null,
+                      "allowed_values_dynamic_variable": "",
+                      "constant_value": "",
+                      "description": "Array element",
+                      "dynamic_variable": "",
+                      "enum": null,
+                      "is_omitted": false,
+                      "is_system_provided": false,
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "agent",
+                  "environment_id",
+                  "title",
+                  "vault_ids",
+                  "initial_events"
+                ],
+                "type": "object"
+              },
+              "request_headers": {
+                "anthropic-beta": "managed-agents-2026-04-01",
+                "anthropic-version": "2023-06-01",
+                "x-api-key": {
+                  "secret_id": "CoDY8aYu9ukOpCZBmydw"
+                }
+              },
+              "response_body_schema": null,
+              "response_filter": null,
+              "url": "https://api.anthropic.com/v1/sessions"
+            },
+            "assignments": [],
+            "description": "Launches the asynchronous credit reviewer agent for the case that was just created. It reads the Notion case and writes a recommendation for the human advisor. Do not read the result aloud.",
+            "disable_interruptions": false,
+            "dynamic_variables": {
+              "dynamic_variable_placeholders": {}
+            },
+            "execution_mode": "immediate",
+            "follow_redirects": false,
+            "follow_redirects_allowed_domains": [],
+            "force_pre_tool_speech": false,
+            "interruption_mode": "allow",
+            "name": "reviewer_agent",
+            "pre_tool_speech": "auto",
+            "response_timeout_secs": 20,
+            "tool_call_sound": null,
+            "tool_call_sound_behavior": "auto",
+            "tool_error_handling_mode": "auto",
+            "type": "webhook"
+          },
+          {
+            "api_schema": {
+              "auth_connection": null,
+              "auth_resolved_params": [],
+              "content_type": "application/json",
+              "kind": "webhook",
+              "method": "POST",
+              "mtls_auth_connection": null,
+              "path_params_schema": {},
+              "query_params_schema": null,
+              "request_body_schema": {
+                "description": "Notion 'Create a page' request. Creates one row in the Rural credit cases database with the applicant's answers as the page content.",
+                "dynamic_variable": "",
+                "is_omitted": false,
+                "properties": {
+                  "children": {
+                    "constant_value": null,
+                    "description": "One paragraph block per line, in this order. First block: the text 'Respuestas de la persona'. Then one block per question you asked and the answer you got, written as 'P: <the question exactly as you asked it> R: <the answer exactly as the person said it>'. Copy literally: do not summarize, correct, translate or convert units. Include every question of the interview, including the ID and authorization steps. Last block: 'Fin de las respuestas'.",
+                    "dynamic_variable": "",
+                    "is_omitted": false,
+                    "items": {
+                      "description": "",
+                      "dynamic_variable": "",
+                      "is_omitted": false,
+                      "properties": {
+                        "object": {
+                          "allowed_values": null,
+                          "allowed_values_dynamic_variable": "",
+                          "constant_value": "",
+                          "description": "Always the string: block",
+                          "dynamic_variable": "",
+                          "enum": [
+                            "block"
+                          ],
+                          "is_omitted": false,
+                          "is_system_provided": false,
+                          "type": "string"
+                        },
+                        "paragraph": {
+                          "description": "",
+                          "dynamic_variable": "",
+                          "is_omitted": false,
+                          "properties": {
+                            "rich_text": {
+                              "constant_value": null,
+                              "description": "Exactly one element.",
+                              "dynamic_variable": "",
+                              "is_omitted": false,
+                              "items": {
+                                "description": "",
+                                "dynamic_variable": "",
+                                "is_omitted": false,
+                                "properties": {
+                                  "text": {
+                                    "description": "",
+                                    "dynamic_variable": "",
+                                    "is_omitted": false,
+                                    "properties": {
+                                      "content": {
+                                        "allowed_values": null,
+                                        "allowed_values_dynamic_variable": "",
+                                        "constant_value": "",
+                                        "description": "The paragraph text. Maximum 1900 characters.",
+                                        "dynamic_variable": "",
+                                        "enum": null,
+                                        "is_omitted": false,
+                                        "is_system_provided": false,
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "content"
+                                    ],
+                                    "type": "object"
+                                  },
+                                  "type": {
+                                    "allowed_values": null,
+                                    "allowed_values_dynamic_variable": "",
+                                    "constant_value": "",
+                                    "description": "Always the string: text",
+                                    "dynamic_variable": "",
+                                    "enum": [
+                                      "text"
+                                    ],
+                                    "is_omitted": false,
+                                    "is_system_provided": false,
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "text"
+                                ],
+                                "type": "object"
+                              },
+                              "type": "array"
+                            }
+                          },
+                          "required": [
+                            "rich_text"
+                          ],
+                          "type": "object"
+                        },
+                        "type": {
+                          "allowed_values": null,
+                          "allowed_values_dynamic_variable": "",
+                          "constant_value": "",
+                          "description": "Always the string: paragraph",
+                          "dynamic_variable": "",
+                          "enum": [
+                            "paragraph"
+                          ],
+                          "is_omitted": false,
+                          "is_system_provided": false,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "object",
+                        "type",
+                        "paragraph"
+                      ],
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "parent": {
+                    "constant_value": {
+                      "database_id": "db53d373-a98a-469d-a608-98d3d9677b88"
+                    },
+                    "description": "",
+                    "dynamic_variable": "",
+                    "is_omitted": false,
+                    "properties": {},
+                    "required": [],
+                    "type": "object"
+                  },
+                  "properties": {
+                    "description": "",
+                    "dynamic_variable": "",
+                    "is_omitted": false,
+                    "properties": {
+                      "Case": {
+                        "description": "",
+                        "dynamic_variable": "",
+                        "is_omitted": false,
+                        "properties": {
+                          "title": {
+                            "constant_value": null,
+                            "description": "Exactly one element.",
+                            "dynamic_variable": "",
+                            "is_omitted": false,
+                            "items": {
+                              "description": "",
+                              "dynamic_variable": "",
+                              "is_omitted": false,
+                              "properties": {
+                                "text": {
+                                  "description": "",
+                                  "dynamic_variable": "",
+                                  "is_omitted": false,
+                                  "properties": {
+                                    "content": {
+                                      "allowed_values": null,
+                                      "allowed_values_dynamic_variable": "",
+                                      "constant_value": "",
+                                      "description": "Case identifier: the ID number digits, a hyphen, and today's date as YYYY-MM-DD. Example: 1012345678-2026-10-03. Take the ID number from the cédula you validated and the date from the current date in your instructions.",
+                                      "dynamic_variable": "",
+                                      "enum": null,
+                                      "is_omitted": false,
+                                      "is_system_provided": false,
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "content"
+                                  ],
+                                  "type": "object"
+                                }
+                              },
+                              "required": [
+                                "text"
+                              ],
+                              "type": "object"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "required": [
+                          "title"
+                        ],
+                        "type": "object"
+                      },
+                      "Credit bureau score": {
+                        "description": "",
+                        "dynamic_variable": "",
+                        "is_omitted": false,
+                        "properties": {
+                          "number": {
+                            "allowed_values": null,
+                            "allowed_values_dynamic_variable": "",
+                            "constant_value": "",
+                            "description": "",
+                            "dynamic_variable": "credit_score",
+                            "enum": null,
+                            "is_omitted": false,
+                            "is_system_provided": false,
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "number"
+                        ],
+                        "type": "object"
+                      },
+                      "Credit check consent": {
+                        "description": "",
+                        "dynamic_variable": "",
+                        "is_omitted": false,
+                        "properties": {
+                          "checkbox": {
+                            "allowed_values": null,
+                            "allowed_values_dynamic_variable": "",
+                            "constant_value": "",
+                            "description": "true if the person explicitly authorized the credit bureau check, false otherwise.",
+                            "dynamic_variable": "",
+                            "enum": null,
+                            "is_omitted": false,
+                            "is_system_provided": false,
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "checkbox"
+                        ],
+                        "type": "object"
+                      },
+                      "Date": {
+                        "description": "",
+                        "dynamic_variable": "",
+                        "is_omitted": false,
+                        "properties": {
+                          "date": {
+                            "description": "",
+                            "dynamic_variable": "",
+                            "is_omitted": false,
+                            "properties": {
+                              "start": {
+                                "allowed_values": null,
+                                "allowed_values_dynamic_variable": "",
+                                "constant_value": "",
+                                "description": "Today's date as YYYY-MM-DD, taken from the current date in your instructions.",
+                                "dynamic_variable": "",
+                                "enum": null,
+                                "is_omitted": false,
+                                "is_system_provided": false,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "start"
+                            ],
+                            "type": "object"
+                          }
+                        },
+                        "required": [
+                          "date"
+                        ],
+                        "type": "object"
+                      },
+                      "ID number": {
+                        "description": "",
+                        "dynamic_variable": "",
+                        "is_omitted": false,
+                        "properties": {
+                          "rich_text": {
+                            "constant_value": null,
+                            "description": "Exactly one element.",
+                            "dynamic_variable": "",
+                            "is_omitted": false,
+                            "items": {
+                              "description": "",
+                              "dynamic_variable": "",
+                              "is_omitted": false,
+                              "properties": {
+                                "text": {
+                                  "description": "",
+                                  "dynamic_variable": "",
+                                  "is_omitted": false,
+                                  "properties": {
+                                    "content": {
+                                      "allowed_values": null,
+                                      "allowed_values_dynamic_variable": "",
+                                      "constant_value": "",
+                                      "description": "Cédula number, digits only, no dots or spaces.",
+                                      "dynamic_variable": "",
+                                      "enum": null,
+                                      "is_omitted": false,
+                                      "is_system_provided": false,
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "content"
+                                  ],
+                                  "type": "object"
+                                }
+                              },
+                              "required": [
+                                "text"
+                              ],
+                              "type": "object"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "required": [
+                          "rich_text"
+                        ],
+                        "type": "object"
+                      },
+                      "Name": {
+                        "description": "",
+                        "dynamic_variable": "",
+                        "is_omitted": false,
+                        "properties": {
+                          "rich_text": {
+                            "constant_value": null,
+                            "description": "Exactly one element.",
+                            "dynamic_variable": "",
+                            "is_omitted": false,
+                            "items": {
+                              "description": "",
+                              "dynamic_variable": "",
+                              "is_omitted": false,
+                              "properties": {
+                                "text": {
+                                  "description": "",
+                                  "dynamic_variable": "",
+                                  "is_omitted": false,
+                                  "properties": {
+                                    "content": {
+                                      "allowed_values": null,
+                                      "allowed_values_dynamic_variable": "",
+                                      "constant_value": "",
+                                      "description": "Full name of the person exactly as printed on the cédula (given names and surnames), or as dictated if there was no readable photo.",
+                                      "dynamic_variable": "",
+                                      "enum": null,
+                                      "is_omitted": false,
+                                      "is_system_provided": false,
+                                      "type": "string"
+                                    }
+                                  },
+                                  "required": [
+                                    "content"
+                                  ],
+                                  "type": "object"
+                                }
+                              },
+                              "required": [
+                                "text"
+                              ],
+                              "type": "object"
+                            },
+                            "type": "array"
+                          }
+                        },
+                        "required": [
+                          "rich_text"
+                        ],
+                        "type": "object"
+                      },
+                      "Preliminary eligibility": {
+                        "description": "",
+                        "dynamic_variable": "",
+                        "is_omitted": false,
+                        "properties": {
+                          "select": {
+                            "description": "",
+                            "dynamic_variable": "",
+                            "is_omitted": false,
+                            "properties": {
+                              "name": {
+                                "allowed_values": null,
+                                "allowed_values_dynamic_variable": "",
+                                "constant_value": "",
+                                "description": "Use 'To be assessed' only if the credit bureau check (credit_score tool) failed or returned an error earlier in this conversation. Otherwise use 'Preliminarily eligible'.",
+                                "dynamic_variable": "",
+                                "enum": [
+                                  "Preliminarily eligible",
+                                  "To be assessed"
+                                ],
+                                "is_omitted": false,
+                                "is_system_provided": false,
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "name"
+                            ],
+                            "type": "object"
+                          }
+                        },
+                        "required": [
+                          "select"
+                        ],
+                        "type": "object"
+                      }
+                    },
+                    "required": [
+                      "Case",
+                      "Name",
+                      "ID number",
+                      "Date",
+                      "Credit check consent",
+                      "Credit bureau score",
+                      "Preliminary eligibility"
+                    ],
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "parent",
+                  "properties",
+                  "children"
+                ],
+                "type": "object"
+              },
+              "request_headers": {
+                "Authorization": {
+                  "secret_id": "yATKu7aJZJ5uateDHDj2"
+                },
+                "Notion-Version": "2022-06-28"
+              },
+              "response_body_schema": null,
+              "response_filter": null,
+              "url": "https://api.notion.com/v1/pages"
+            },
+            "assignments": [
+              {
+                "dynamic_variable": "case_page_id",
+                "preserve_native_type": false,
+                "sanitize": true,
+                "source": "response",
+                "value_path": "id"
+              },
+              {
+                "dynamic_variable": "case_url",
+                "preserve_native_type": false,
+                "sanitize": false,
+                "source": "response",
+                "value_path": "url"
+              }
+            ],
+            "description": "Creates the applicant's case in the bank's case system (Notion database 'Rural credit cases'). Call it exactly once, right after the questionnaire is finished and before scheduling the appointment. Never call it before the questionnaire is complete. Do not read the result aloud.",
+            "disable_interruptions": false,
+            "dynamic_variables": {
+              "dynamic_variable_placeholders": {}
+            },
+            "execution_mode": "immediate",
+            "follow_redirects": false,
+            "follow_redirects_allowed_domains": [],
+            "force_pre_tool_speech": false,
+            "interruption_mode": "allow",
+            "name": "bpmn_create_case",
+            "pre_tool_speech": "off",
+            "response_timeout_secs": 20,
+            "tool_call_sound": null,
+            "tool_call_sound_behavior": "auto",
+            "tool_error_handling_mode": "auto",
+            "type": "webhook"
+          },
+          {
+            "assignments": [],
+            "description": "Ends the conversation. Use it only as a last resort, after a goodbye has been said, when the person wants to stop and the current step offers no other way to close. Never use it while the case is being saved or the appointment is being agreed.",
+            "disable_interruptions": false,
+            "force_pre_tool_speech": false,
+            "interruption_mode": "allow",
+            "name": "end_call",
+            "params": {
+              "system_tool_type": "end_call"
+            },
+            "pre_tool_speech": "auto",
+            "response_timeout_secs": 20,
+            "tool_call_sound": null,
+            "tool_call_sound_behavior": "auto",
+            "tool_error_handling_mode": "auto",
+            "type": "system"
+          },
+          {
+            "assignments": [],
+            "description": "",
+            "disable_interruptions": false,
+            "force_pre_tool_speech": false,
+            "interruption_mode": "allow",
+            "name": "transfer_to_number",
+            "params": {
+              "enable_client_message": true,
+              "system_tool_type": "transfer_to_number",
+              "transfer_rules": [],
+              "transfers": [
+                {
+                  "condition": "The person asked to speak with a human or an advisor at the bank's contact center, and accepted being transferred.",
+                  "custom_sip_headers": [],
+                  "phone_number": "+573208019335",
+                  "post_dial_digits": null,
+                  "require_acceptance": false,
+                  "sip_refer_play_dialtone": true,
+                  "transfer_destination": {
+                    "phone_number": "+573208019335",
+                    "type": "phone"
+                  },
+                  "transfer_type": "conference",
+                  "uui": null
+                }
+              ]
+            },
+            "pre_tool_speech": "auto",
+            "response_timeout_secs": 20,
+            "tool_call_sound": null,
+            "tool_call_sound_behavior": "auto",
+            "tool_error_handling_mode": "auto",
+            "type": "system"
+          }
+        ]
+      },
+      "subagents": [],
+      "text_behavior_overrides": {
+        "telegram_integration": {
+          "disable_max_duration": null,
+          "interaction_budget": null,
+          "output_format": null,
+          "verbosity": null
+        },
+        "whatsapp": {
+          "disable_max_duration": true,
+          "interaction_budget": null,
+          "output_format": null,
+          "verbosity": null
+        }
+      }
+    },
+    "asr": {
+      "keywords": [],
+      "provider": "scribe_realtime",
+      "quality": "high",
+      "user_input_audio_format": "pcm_16000"
+    },
+    "conversation": {
+      "background_sound": {
+        "crossfade_loop": true,
+        "source_id": "typing",
+        "source_type": "preset",
+        "volume": 0.17
+      },
+      "client_events": [
+        "audio",
+        "interruption",
+        "user_transcript",
+        "agent_response",
+        "agent_response_correction"
+      ],
+      "compaction": {
+        "enabled": null,
+        "min_reclaimable_tokens": null,
+        "soft_trigger_fraction": null,
+        "tail_size": null
+      },
+      "dtmf_input_settings": null,
+      "file_input": {
+        "enabled": true,
+        "max_files_in_memory": 3,
+        "max_files_per_conversation": 3
+      },
+      "max_duration_seconds": 3600,
+      "max_duration_seconds_after_last_agent_message": null,
+      "monitoring_enabled": false,
+      "monitoring_events": [
+        "user_transcript",
+        "agent_response",
+        "agent_response_correction"
+      ],
+      "source_attribution": true,
+      "text_only": false
+    },
+    "language_presets": {},
+    "realtime_model": null,
+    "tts": {
+      "agent_output_audio_format": "pcm_16000",
+      "audio_effects": null,
+      "enable_phoneme_tags": true,
+      "expressive_mode": true,
+      "model_id": "eleven_v4_turbo",
+      "optimize_streaming_latency": 3,
+      "pronunciation_dictionary_locators": [
+        {
+          "pronunciation_dictionary_id": "ZBAwbyuydma9UgwB0lfD",
+          "version_id": null
+        }
+      ],
+      "similarity_boost": 0.85,
+      "speed": 1.0,
+      "stability": 0.9,
+      "suggested_audio_tags": [
+        {
+          "description": "",
+          "tag": "Warmly"
+        },
+        {
+          "description": "",
+          "tag": "Empathetically"
+        }
+      ],
+      "supported_voices": [],
+      "text_normalisation_type": "system_prompt",
+      "voice_id": "b2htR0pMe28pYwCY9gnP"
+    },
+    "turn": {
+      "initial_wait_time": null,
+      "interruption_ignore_term_languages": [
+        "es"
+      ],
+      "interruption_ignore_terms": [
+        "mmm",
+        "mhm",
+        "ajá",
+        "okay",
+        "ok",
+        "vale",
+        "okey",
+        "ya"
+      ],
+      "merge_with_default_ignore_terms": false,
+      "mode": "turn",
+      "retranscribe_on_turn_timeout": false,
+      "silence_end_call_timeout": -1.0,
+      "soft_timeout_config": {
+        "additional_soft_timeout_messages": [],
+        "disable_until_first_user_message": false,
+        "llm_generated_message_prompt_override": null,
+        "max_soft_timeouts_per_generation": 1,
+        "message": "Regáleme un segundo, sigo trabajando por usted.",
+        "randomize_fillers": false,
+        "timeout_seconds": -1.0,
+        "use_llm_generated_message": false
+      },
+      "speculative_turn": true,
+      "spelling_patience": "auto",
+      "transcribe_on_disabled_interruptions": false,
+      "turn_eagerness": "patient",
+      "turn_model": "turn_v3",
+      "turn_timeout": 7.0
+    },
+    "vad": {
+      "background_voice_detection": false
+    }
+  },
+  "name": "Clara - Agricultural Bank",
+  "platform_settings": {
+    "alerting": null,
+    "analysis_bedrock_llm": null,
+    "analysis_llm": "claude-sonnet-4-5",
+    "analysis_llm_billed": false,
+    "archived": false,
+    "auth": {
+      "allowlist": [],
+      "enable_auth": false,
+      "require_origin_header": false,
+      "shareable_token": null
+    },
+    "auto_translate_transcript_to_app_language": null,
+    "ban": null,
+    "call_limits": {
+      "agent_concurrency_limit": -1,
+      "bursting_enabled": true,
+      "daily_limit": 100000
+    },
+    "data_collection": {
+      "actividad_principal": {
+        "allowed_values": null,
+        "allowed_values_dynamic_variable": "",
+        "analysis_schedule": null,
+        "constant_value": "",
+        "description": "Questions and answers about the main thing the person lives on: what they produce or do, how long they have done it, how often they sell, how much they produce and how much they get paid each time. Copy the agent's question and the person's answer literally, in order, as 'P: <question as the agent asked it> R: <answer exactly as the person said it>'. One pair per line. Do not summarize, correct, convert units or add anything. If the topic was not discussed, leave it empty.",
+        "dynamic_variable": "",
+        "enum": null,
+        "is_omitted": false,
+        "is_system_provided": false,
+        "llm": null,
+        "llm_billed": false,
+        "name": null,
+        "type": "string"
+      },
+      "animales_y_cultivos": {
+        "allowed_values": null,
+        "allowed_values_dynamic_variable": "",
+        "analysis_schedule": null,
+        "constant_value": "",
+        "description": "Questions and answers about animals (kind and number) and long-lived crops such as coffee, cacao, fruit trees or pasture. Copy the agent's question and the person's answer literally, in order, as 'P: <question as the agent asked it> R: <answer exactly as the person said it>'. One pair per line. Do not summarize, correct, convert units or add anything. If the topic was not discussed, leave it empty.",
+        "dynamic_variable": "",
+        "enum": null,
+        "is_omitted": false,
+        "is_system_provided": false,
+        "llm": null,
+        "llm_billed": false,
+        "name": null,
+        "type": "string"
+      },
+      "autorizacion_centrales_riesgo": {
+        "allowed_values": null,
+        "allowed_values_dynamic_variable": "",
+        "analysis_schedule": null,
+        "constant_value": "",
+        "description": "True only if the person explicitly authorized the bank to check their information in the credit bureaus (centrales de riesgo). False if they refused or were never asked.",
+        "dynamic_variable": "",
+        "enum": null,
+        "is_omitted": false,
+        "is_system_provided": false,
+        "llm": null,
+        "llm_billed": false,
+        "name": null,
+        "type": "boolean"
+      },
+      "comentarios_adicionales": {
+        "allowed_values": null,
+        "allowed_values_dynamic_variable": "",
+        "analysis_schedule": null,
+        "constant_value": "",
+        "description": "Questions and answers about anything else the person wanted the advisor to know, and any statement that does not fit the other categories. Copy the agent's question and the person's answer literally, in order, as 'P: <question as the agent asked it> R: <answer exactly as the person said it>'. One pair per line. Do not summarize, correct, convert units or add anything. If the topic was not discussed, leave it empty.",
+        "dynamic_variable": "",
+        "enum": null,
+        "is_omitted": false,
+        "is_system_provided": false,
+        "llm": null,
+        "llm_billed": false,
+        "name": null,
+        "type": "string"
+      },
+      "cuestionario_completo": {
+        "allowed_values": null,
+        "allowed_values_dynamic_variable": "",
+        "analysis_schedule": null,
+        "constant_value": "",
+        "description": "Every question the agent asked and every answer the person gave during the whole conversation, in order, including identity and authorization. Copy the agent's question and the person's answer literally, in order, as 'P: <question as the agent asked it> R: <answer exactly as the person said it>'. One pair per line. Do not summarize, correct, convert units or add anything. If the topic was not discussed, leave it empty.",
+        "dynamic_variable": "",
+        "enum": null,
+        "is_omitted": false,
+        "is_system_provided": false,
+        "llm": null,
+        "llm_billed": false,
+        "name": null,
+        "type": "string"
+      },
+      "destino_credito": {
+        "allowed_values": null,
+        "allowed_values_dynamic_variable": "",
+        "analysis_schedule": null,
+        "constant_value": "",
+        "description": "Questions and answers about what the credit is for: what they would buy or pay, how much they think they need, whether they have done it before and when it would start producing money. Copy the agent's question and the person's answer literally, in order, as 'P: <question as the agent asked it> R: <answer exactly as the person said it>'. One pair per line. Do not summarize, correct, convert units or add anything. If the topic was not discussed, leave it empty.",
+        "dynamic_variable": "",
+        "enum": null,
+        "is_omitted": false,
+        "is_system_provided": false,
+        "llm": null,
+        "llm_billed": false,
+        "name": null,
+        "type": "string"
+      },
+      "deudas": {
+        "allowed_values": null,
+        "allowed_values_dynamic_variable": "",
+        "analysis_schedule": null,
+        "constant_value": "",
+        "description": "Questions and answers about debts: who they owe, how much is left and how often they pay. Include the answer even if it is 'no'. Copy the agent's question and the person's answer literally, in order, as 'P: <question as the agent asked it> R: <answer exactly as the person said it>'. One pair per line. Do not summarize, correct, convert units or add anything. If the topic was not discussed, leave it empty.",
+        "dynamic_variable": "",
+        "enum": null,
+        "is_omitted": false,
+        "is_system_provided": false,
+        "llm": null,
+        "llm_billed": false,
+        "name": null,
+        "type": "string"
+      },
+      "forma_de_pago": {
+        "allowed_values": null,
+        "allowed_values_dynamic_variable": "",
+        "analysis_schedule": null,
+        "constant_value": "",
+        "description": "Questions and answers about how often it is easier for the person to pay (monthly, at harvest, etc.). Copy the agent's question and the person's answer literally, in order, as 'P: <question as the agent asked it> R: <answer exactly as the person said it>'. One pair per line. Do not summarize, correct, convert units or add anything. If the topic was not discussed, leave it empty.",
+        "dynamic_variable": "",
+        "enum": null,
+        "is_omitted": false,
+        "is_system_provided": false,
+        "llm": null,
+        "llm_billed": false,
+        "name": null,
+        "type": "string"
+      },
+      "gastos_produccion": {
+        "allowed_values": null,
+        "allowed_values_dynamic_variable": "",
+        "analysis_schedule": null,
+        "constant_value": "",
+        "description": "Questions and answers about what the person spends to produce (inputs, feed, labour, transport) and how much. Copy the agent's question and the person's answer literally, in order, as 'P: <question as the agent asked it> R: <answer exactly as the person said it>'. One pair per line. Do not summarize, correct, convert units or add anything. If the topic was not discussed, leave it empty.",
+        "dynamic_variable": "",
+        "enum": null,
+        "is_omitted": false,
+        "is_system_provided": false,
+        "llm": null,
+        "llm_billed": false,
+        "name": null,
+        "type": "string"
+      },
+      "hogar": {
+        "allowed_values": null,
+        "allowed_values_dynamic_variable": "",
+        "analysis_schedule": null,
+        "constant_value": "",
+        "description": "Questions and answers about the household: how many people depend on the income and monthly household spending. Copy the agent's question and the person's answer literally, in order, as 'P: <question as the agent asked it> R: <answer exactly as the person said it>'. One pair per line. Do not summarize, correct, convert units or add anything. If the topic was not discussed, leave it empty.",
+        "dynamic_variable": "",
+        "enum": null,
+        "is_omitted": false,
+        "is_system_provided": false,
+        "llm": null,
+        "llm_billed": false,
+        "name": null,
+        "type": "string"
+      },
+      "maquinas_y_herramientas": {
+        "allowed_values": null,
+        "allowed_values_dynamic_variable": "",
+        "analysis_schedule": null,
+        "constant_value": "",
+        "description": "Questions and answers about machines, tools and vehicles the person owns. Copy the agent's question and the person's answer literally, in order, as 'P: <question as the agent asked it> R: <answer exactly as the person said it>'. One pair per line. Do not summarize, correct, convert units or add anything. If the topic was not discussed, leave it empty.",
+        "dynamic_variable": "",
+        "enum": null,
+        "is_omitted": false,
+        "is_system_provided": false,
+        "llm": null,
+        "llm_billed": false,
+        "name": null,
+        "type": "string"
+      },
+      "nombre_completo": {
+        "allowed_values": null,
+        "allowed_values_dynamic_variable": "",
+        "analysis_schedule": null,
+        "constant_value": "",
+        "description": "Full name of the person, exactly as read from the cédula or as they dictated it. Empty if never obtained.",
+        "dynamic_variable": "",
+        "enum": null,
+        "is_omitted": false,
+        "is_system_provided": false,
+        "llm": null,
+        "llm_billed": false,
+        "name": null,
+        "type": "string"
+      },
+      "numero_cedula": {
+        "allowed_values": null,
+        "allowed_values_dynamic_variable": "",
+        "analysis_schedule": null,
+        "constant_value": "",
+        "description": "Cédula number, digits only, as read from the ID or as dictated. Empty if never obtained.",
+        "dynamic_variable": "",
+        "enum": null,
+        "is_omitted": false,
+        "is_system_provided": false,
+        "llm": null,
+        "llm_billed": false,
+        "name": null,
+        "type": "string"
+      },
+      "otros_ingresos": {
+        "allowed_values": null,
+        "allowed_values_dynamic_variable": "",
+        "analysis_schedule": null,
+        "constant_value": "",
+        "description": "Questions and answers about other income: milk, eggs, animals, day labour, a shop, family help, subsidies. Copy the agent's question and the person's answer literally, in order, as 'P: <question as the agent asked it> R: <answer exactly as the person said it>'. One pair per line. Do not summarize, correct, convert units or add anything. If the topic was not discussed, leave it empty.",
+        "dynamic_variable": "",
+        "enum": null,
+        "is_omitted": false,
+        "is_system_provided": false,
+        "llm": null,
+        "llm_billed": false,
+        "name": null,
+        "type": "string"
+      },
+      "tierra": {
+        "allowed_values": null,
+        "allowed_values_dynamic_variable": "",
+        "analysis_schedule": null,
+        "constant_value": "",
+        "description": "Questions and answers about the land: owned, rented, sharecropped or without title, and its size in the person's own units. Copy the agent's question and the person's answer literally, in order, as 'P: <question as the agent asked it> R: <answer exactly as the person said it>'. One pair per line. Do not summarize, correct, convert units or add anything. If the topic was not discussed, leave it empty.",
+        "dynamic_variable": "",
+        "enum": null,
+        "is_omitted": false,
+        "is_system_provided": false,
+        "llm": null,
+        "llm_billed": false,
+        "name": null,
+        "type": "string"
+      }
+    },
+    "data_collection_scopes": {
+      "actividad_principal": "conversation",
+      "animales_y_cultivos": "conversation",
+      "autorizacion_centrales_riesgo": "conversation",
+      "comentarios_adicionales": "conversation",
+      "cuestionario_completo": "conversation",
+      "destino_credito": "conversation",
+      "deudas": "conversation",
+      "forma_de_pago": "conversation",
+      "gastos_produccion": "conversation",
+      "hogar": "conversation",
+      "maquinas_y_herramientas": "conversation",
+      "nombre_completo": "conversation",
+      "numero_cedula": "conversation",
+      "otros_ingresos": "conversation",
+      "tierra": "conversation"
+    },
+    "evaluation": {
+      "criteria": [
+        {
+          "analysis_schedule": null,
+          "conversation_goal_prompt": "Mark success if the agent asked the person for explicit permission to check their information in the credit bureaus (centrales de riesgo) before any credit check happened, and did not proceed without a clear yes. Mark failure if the check was done without asking or after a refusal. Mark unknown if the conversation ended before reaching that step.",
+          "id": "consent_before_bureau",
+          "llm": null,
+          "llm_billed": false,
+          "max_score": 100,
+          "name": "Permiso antes de centrales",
+          "scope": "conversation",
+          "score_instructions": null,
+          "scoring_mode": "binary",
+          "type": "prompt",
+          "use_knowledge_base": false
+        },
+        {
+          "analysis_schedule": null,
+          "conversation_goal_prompt": "Mark success if at no point the agent stated a loan amount, an interest rate, or said or implied that the credit was approved or denied. Mark failure if it did any of those. Being told the score is too low to continue is allowed, as long as no figures or 'aprobado' are said.",
+          "id": "no_amount_rate_approval",
+          "llm": null,
+          "llm_billed": false,
+          "max_score": 100,
+          "name": "Sin monto, tasa ni aprobación",
+          "scope": "conversation",
+          "score_instructions": null,
+          "scoring_mode": "binary",
+          "type": "prompt",
+          "use_knowledge_base": false
+        },
+        {
+          "analysis_schedule": null,
+          "conversation_goal_prompt": "Mark success if the agent addressed the person with 'usted' during the entire conversation and never used 'tú', 'te' or 'tu' when speaking to them. Mark failure if it switched to tuteo even once.",
+          "id": "usted_throughout",
+          "llm": null,
+          "llm_billed": false,
+          "max_score": 100,
+          "name": "Trato de usted",
+          "scope": "conversation",
+          "score_instructions": null,
+          "scoring_mode": "binary",
+          "type": "prompt",
+          "use_knowledge_base": false
+        },
+        {
+          "analysis_schedule": null,
+          "conversation_goal_prompt": "Mark success if, when an appointment was confirmed, the agent said the day and time in natural Colombian Spanish (for example 'el viernes 9 de octubre a las tres de la tarde') and never read an ISO date, a code, or a tool result aloud. Mark unknown if no appointment was scheduled.",
+          "id": "appointment_in_words",
+          "llm": null,
+          "llm_billed": false,
+          "max_score": 100,
+          "name": "Cita dicha en palabras",
+          "scope": "conversation",
+          "score_instructions": null,
+          "scoring_mode": "binary",
+          "type": "prompt",
+          "use_knowledge_base": false
+        }
+      ]
+    },
+    "guardrails": {
+      "content": {
+        "config": {
+          "harassment": {
+            "is_enabled": true,
+            "threshold": "high"
+          },
+          "medical_and_legal_information": {
+            "is_enabled": true,
+            "threshold": "medium"
+          },
+          "profanity": {
+            "is_enabled": false,
+            "threshold": "medium"
+          },
+          "religion_or_politics": {
+            "is_enabled": false,
+            "threshold": "medium"
+          },
+          "self_harm": {
+            "is_enabled": false,
+            "threshold": "low"
+          },
+          "sexual": {
+            "is_enabled": false,
+            "threshold": "low"
+          },
+          "violence": {
+            "is_enabled": false,
+            "threshold": "medium"
+          }
+        },
+        "execution_mode": "streaming",
+        "trigger_action": {
+          "type": "end_call"
+        }
+      },
+      "custom": {
+        "config": {
+          "configs": [
+            {
+              "evaluate_full_response_only": false,
+              "execution_mode": "blocking",
+              "history_include_tool_calls": false,
+              "history_message_count": 1,
+              "is_enabled": true,
+              "model": "gemini-3.1-flash-lite",
+              "name": "Sin cifras ni decisiones de crédito",
+              "prompt": "Block the agent reply if it states a specific loan amount, a credit limit, an interest rate or cost of the credit, or says or implies that the person's credit is approved, pre-approved, denied or rejected. Allowed: saying that the advisor decides those things at the appointment; saying that the application cannot continue for now; repeating an amount the person themselves said they need.",
+              "trigger_action": {
+                "feedback": "Do not state amounts, rates, or approval decisions. Say the advisor defines that at the appointment and continue with the task.",
+                "type": "retry"
+              }
+            },
+            {
+              "evaluate_full_response_only": false,
+              "execution_mode": "blocking",
+              "history_include_tool_calls": false,
+              "history_message_count": 1,
+              "is_enabled": true,
+              "model": "gemini-3.1-flash-lite",
+              "name": "Preguntas prohibidas",
+              "prompt": "Block the agent reply if it asks about, or conditions anything on, the person's ethnicity, race, religion, political opinions, status as a victim of the armed conflict, health conditions, disability, pregnancy, sexual orientation or gender identity. Allowed: asking about their work, land, animals, crops, income, expenses, debts and the purpose of the credit.",
+              "trigger_action": {
+                "feedback": "That question is not allowed. Ask only about the person's work, land, animals, crops, income, expenses, debts and what the credit is for.",
+                "type": "retry"
+              }
+            },
+            {
+              "evaluate_full_response_only": false,
+              "execution_mode": "blocking",
+              "history_include_tool_calls": false,
+              "history_message_count": 1,
+              "is_enabled": true,
+              "model": "gemini-3.1-flash-lite",
+              "name": "Promesas y cobros",
+              "prompt": "Block the agent reply if it promises that the credit will be approved, promises a disbursement date or amount, or asks the person for money, a deposit, a transfer, a fee, a payment, or a bank card or account password, for any reason. Allowed: asking how the person would prefer to repay a credit (monthly or by harvest), and telling them to bring their cédula to the appointment.",
+              "trigger_action": {
+                "feedback": "Never promise approval or disbursement, and never ask the person for money or payment information. Correct the reply and continue.",
+                "type": "retry"
+              }
+            }
+          ]
+        }
+      },
+      "focus": {
+        "is_enabled": true
+      },
+      "moderation": null,
+      "prompt_injection": {
+        "is_enabled": true
+      },
+      "synthetic_voice": {
+        "is_enabled": false,
+        "trigger_action": {
+          "type": "end_call"
+        }
+      },
+      "version": "1"
+    },
+    "overrides": {
+      "conversation_config_override": {
+        "agent": {
+          "first_message": false,
+          "language": false,
+          "max_conversation_duration_message": false,
+          "prompt": {
+            "knowledge_base": false,
+            "llm": false,
+            "native_mcp_server_ids": false,
+            "prompt": false,
+            "tool_ids": false
+          }
+        },
+        "asr": {
+          "keywords": false
+        },
+        "conversation": {
+          "max_duration_seconds": false,
+          "text_only": true
+        },
+        "tts": {
+          "model_id": false,
+          "pronunciation_dictionary_locators": false,
+          "similarity_boost": false,
+          "speed": false,
+          "stability": false,
+          "supported_voices": false,
+          "voice_id": false
+        },
+        "turn": {
+          "soft_timeout_config": {
+            "additional_soft_timeout_messages": false,
+            "message": false
+          }
+        }
+      },
+      "custom_llm_extra_body": false,
+      "enable_conversation_initiation_client_data_from_webhook": false,
+      "enable_procedure_ids_from_client": false,
+      "enable_starting_workflow_node_id_from_client": false
+    },
+    "overview_dashboard_template_id": null,
+    "privacy": {
+      "apply_to_existing_conversations": false,
+      "conversation_history_redaction": {
+        "enabled": false,
+        "entities": [],
+        "excluded_data_collection_ids": []
+      },
+      "delete_audio": false,
+      "delete_transcript_and_pii": false,
+      "nested_history_redaction": false,
+      "record_voice": true,
+      "retention_days": -1,
+      "user_memory": {
+        "enabled": false,
+        "scale": "balanced"
+      },
+      "zero_retention_mode": false
+    },
+    "queueing_config": {
+      "enabled": true,
+      "hold_audio": null,
+      "wait_timeout_seconds": 180
+    },
+    "safety": {
+      "ignore_safety_evaluation": false,
+      "is_blocked_ivc": false,
+      "is_blocked_non_ivc": false
+    },
+    "sentiment_analysis": {
+      "enabled": true
+    },
+    "simulation_library": {
+      "enabled": false,
+      "test_ids": []
+    },
+    "smb_metadata": null,
+    "summary_language": "es",
+    "testing": {
+      "attached_tests": [
+        {
+          "test_id": "test_6501m461m2aze2htbd30b28cpm0q",
+          "workflow_node_id": "node_01m416bf4mesn8twb8p5k8b887"
+        },
+        {
+          "test_id": "test_9001m461m2rwerwtcs6x6hybzwap",
+          "workflow_node_id": "node_01m416bf4mesn8twb8p5k8b887"
+        },
+        {
+          "test_id": "test_6201m461m3axf05rz3fg4btkw7tw",
+          "workflow_node_id": "node_01m416bf4mesn8twb8p5k8b887"
+        },
+        {
+          "test_id": "test_0101m461m3sxe5ytk58x3w0q0xyt",
+          "workflow_node_id": "node_01m416bf4mesn8twb8p5k8b887"
+        }
+      ],
+      "referenced_tests_ids": [
+        "test_6501m461m2aze2htbd30b28cpm0q",
+        "test_9001m461m2rwerwtcs6x6hybzwap",
+        "test_6201m461m3axf05rz3fg4btkw7tw",
+        "test_0101m461m3sxe5ytk58x3w0q0xyt"
+      ]
+    },
+    "topic_discovery": {
+      "enabled": true
+    },
+    "trust_context": "unknown",
+    "widget": {
+      "action_text": null,
+      "always_expanded": false,
+      "avatar": {
+        "color_1": "#2792dc",
+        "color_2": "#9ce6e6",
+        "type": "orb"
+      },
+      "bg_color": "#ffffff",
+      "border_color": "#e1e1e1",
+      "border_radius": null,
+      "btn_color": "#000000",
+      "btn_radius": null,
+      "btn_text_color": "#ffffff",
+      "conversation_mode_toggle_enabled": false,
+      "custom_avatar_path": null,
+      "default_expanded": false,
+      "disable_banner": false,
+      "dismissible": false,
+      "end_call_text": null,
+      "end_feedback": {
+        "type": "rating"
+      },
+      "expand_text": null,
+      "expandable": "never",
+      "feedback_mode": "during",
+      "first_message_quick_replies": [],
+      "focus_color": "#000000",
+      "language_presets": {},
+      "language_selector": false,
+      "listening_text": null,
+      "markdown_link_allow_http": true,
+      "markdown_link_allowed_hosts": [],
+      "markdown_link_include_www": true,
+      "mic_muting_enabled": true,
+      "override_link": null,
+      "placement": "bottom-right",
+      "shareable_page_show_terms": true,
+      "shareable_page_text": null,
+      "show_agent_status": false,
+      "show_avatar_when_collapsed": false,
+      "show_conversation_id": true,
+      "show_resize_button": true,
+      "speaking_text": null,
+      "start_call_text": null,
+      "strip_audio_tags": true,
+      "styles": {
+        "accent": null,
+        "accent_active": null,
+        "accent_border": null,
+        "accent_hover": null,
+        "accent_primary": null,
+        "accent_subtle": null,
+        "base": null,
+        "base_active": null,
+        "base_border": null,
+        "base_error": null,
+        "base_hover": null,
+        "base_primary": null,
+        "base_subtle": null,
+        "bubble_radius": null,
+        "button_radius": null,
+        "compact_sheet_radius": null,
+        "dropdown_sheet_radius": null,
+        "input_radius": null,
+        "overlay_padding": null,
+        "sheet_radius": null
+      },
+      "supports_text_only": false,
+      "syntax_highlight_theme": null,
+      "terms_html": "<h4>Terms and conditions</h4>\n<p>By clicking &quot;Agree,&quot; and each time I interact with this AI agent, I consent to the recording, storage, and sharing of my communications with third-party service providers, and as described in the Privacy Policy.\nIf you do not wish to have your conversations recorded, please refrain from using this service.</p>\n",
+      "terms_key": null,
+      "terms_text": "#### Terms and conditions\n\nBy clicking \"Agree,\" and each time I interact with this AI agent, I consent to the recording, storage, and sharing of my communications with third-party service providers, and as described in the Privacy Policy.\nIf you do not wish to have your conversations recorded, please refrain from using this service.",
+      "text_color": "#000000",
+      "text_contents": {
+        "accept_terms": null,
+        "agent_done": null,
+        "agent_ended_conversation": null,
+        "agent_error": null,
+        "agent_working": null,
+        "attach_file": null,
+        "change_language": null,
+        "chatting_status": null,
+        "collapse": null,
+        "connecting_status": null,
+        "conversation_id": null,
+        "copied": null,
+        "copy": null,
+        "copy_id": null,
+        "dismiss_terms": null,
+        "download": null,
+        "end_call": null,
+        "error_occurred": null,
+        "expand": null,
+        "file_limit_reached": null,
+        "file_too_large": null,
+        "file_type_unsupported": null,
+        "file_upload_error": null,
+        "follow_up_feedback_placeholder": null,
+        "go_back": null,
+        "initiate_feedback": null,
+        "input_label": null,
+        "input_placeholder": null,
+        "input_placeholder_new_conversation": null,
+        "input_placeholder_text_only": null,
+        "listening_status": null,
+        "main_label": null,
+        "mute_microphone": null,
+        "new_call": null,
+        "queue_timed_out": null,
+        "queue_waiting_status": null,
+        "queue_waiting_status_short": null,
+        "remove_file": null,
+        "request_follow_up_feedback": null,
+        "rich_content_unavailable": null,
+        "send_message": null,
+        "speaking_status": null,
+        "start_call": null,
+        "start_chat": null,
+        "submit": null,
+        "switched_to_text_mode": null,
+        "switched_to_voice_mode": null,
+        "text_mode": null,
+        "thanks_for_feedback": null,
+        "thanks_for_feedback_details": null,
+        "typing_indicator": null,
+        "user_ended_conversation": null,
+        "voice_mode": null,
+        "wrap": null
+      },
+      "text_input_enabled": true,
+      "transcript_enabled": true,
+      "variant": "full"
+    },
+    "workspace_overrides": {
+      "cloud_storage_export": {
+        "destination_id": null,
+        "events": [
+          "transcript"
+        ],
+        "transcript_format": "json"
+      },
+      "conversation_initiation_client_data_webhook": null,
+      "webhooks": {
+        "events": [
+          "transcript"
+        ],
+        "exclude_transcript": false,
+        "post_call_webhook_id": null,
+        "send_audio": false,
+        "transcript_format": "json"
+      }
+    }
+  },
+  "tags": [
+    "customer-service"
+  ],
+  "workflow": {
+    "edges": {
+      "edge_01m416bf4re2n87zpx2tvpt34r": {
+        "backward_condition": null,
+        "forward_condition": {
+          "label": null,
+          "type": "unconditional"
+        },
+        "source": "start_node",
+        "target": "node_01m454e9y74mnfctxv67cgr9ek"
+      },
+      "edge_01m429vymxe8nbxcwavx661bjr": {
+        "backward_condition": null,
+        "forward_condition": {
+          "condition": "After 3 unusable photos and a failed attempt at dictation, no usable cédula number was obtained.",
+          "label": "Invalid ID",
+          "type": "llm"
+        },
+        "source": "node_01m416bf4mesn8twb8p5k8b887",
+        "target": "node_01m44c2bczenmtzcxjyhbhkcyx"
+      },
+      "edge_01m42a54x9et4arg5h08ph43as": {
+        "backward_condition": null,
+        "forward_condition": {
+          "condition": "A usable cédula number was obtained AND the person clearly authorized the bank to check their information in the credit bureaus.",
+          "label": "Valid ID and consent",
+          "type": "llm"
+        },
+        "source": "node_01m416bf4mesn8twb8p5k8b887",
+        "target": "node_01m44cm435ehm8bj2ak614n5bg"
+      },
+      "edge_01m42a7qfbesz9yaey9c4edmvn": {
+        "backward_condition": null,
+        "forward_condition": {
+          "condition": "The questionnaire's three parts are complete or their limits were reached, the closing question was asked, and bpmn_create_case was called.",
+          "label": "Questionnaire finished",
+          "type": "llm"
+        },
+        "source": "node_01m41a06j6e2bs8j1dc9mf4p4k",
+        "target": "node_01m44e5ftqe8esq9nrfxc3afz0"
+      },
+      "edge_01m42cdjc0e0cbqts15f23qtqj": {
+        "backward_condition": null,
+        "forward_condition": {
+          "label": null,
+          "type": "unconditional"
+        },
+        "source": "node_01m42cdd1aemdvtmedemf14vw1",
+        "target": "node_01m429zhw3e4qvycbe7f8m334c"
+      },
+      "edge_01m42cdxbxeqqs5vk2zn6szfpk": {
+        "backward_condition": null,
+        "forward_condition": {
+          "label": "Score check failed",
+          "successful": false,
+          "type": "result"
+        },
+        "source": "node_01m42a54x6eyzbcamxsj3mw05s",
+        "target": "node_01m44cz8g0ev7rtdn7rn6mq18z"
+      },
+      "edge_01m42cq971ez9998qxjgcgvd2t": {
+        "backward_condition": null,
+        "forward_condition": {
+          "expression": {
+            "left": {
+              "name": "credit_score",
+              "type": "dynamic_variable"
+            },
+            "right": {
+              "type": "number_literal",
+              "value": 400
+            },
+            "type": "gt_operator"
+          },
+          "label": "Good credit score",
+          "type": "expression"
+        },
+        "source": "node_01m42a54x6eyzbcamxsj3mw05s",
+        "target": "node_01m41a06j6e2bs8j1dc9mf4p4k"
+      },
+      "edge_01m42crzz2efjrn5f10te9ahdy": {
+        "backward_condition": null,
+        "forward_condition": {
+          "expression": {
+            "left": {
+              "name": "credit_score",
+              "type": "dynamic_variable"
+            },
+            "right": {
+              "type": "number_literal",
+              "value": 400
+            },
+            "type": "lte_operator"
+          },
+          "label": "Low credit score",
+          "type": "expression"
+        },
+        "source": "node_01m42a54x6eyzbcamxsj3mw05s",
+        "target": "node_01m42crzyzexx88ra0d2qjb05z"
+      },
+      "edge_01m44bwnhpeq0rq8vztx9m8vt9": {
+        "backward_condition": null,
+        "forward_condition": {
+          "label": null,
+          "type": "unconditional"
+        },
+        "source": "node_01m42crzyzexx88ra0d2qjb05z",
+        "target": "node_01m44bwnhkedvvm753g1g61esa"
+      },
+      "edge_01m44c40sne1wbcsdzz0amv8dn": {
+        "backward_condition": null,
+        "forward_condition": {
+          "label": null,
+          "type": "unconditional"
+        },
+        "source": "node_01m44c2bczenmtzcxjyhbhkcyx",
+        "target": "node_01m44c40sjepfve0xn6f1q1q3z"
+      },
+      "edge_01m44cnydceaa94nsb33pfd2v6": {
+        "backward_condition": null,
+        "forward_condition": {
+          "label": null,
+          "type": "unconditional"
+        },
+        "source": "node_01m44cm435ehm8bj2ak614n5bg",
+        "target": "node_01m42a54x6eyzbcamxsj3mw05s"
+      },
+      "edge_01m44d0v45e309kg8em93vgfcd": {
+        "backward_condition": null,
+        "forward_condition": {
+          "label": null,
+          "type": "unconditional"
+        },
+        "source": "node_01m44cz8g0ev7rtdn7rn6mq18z",
+        "target": "node_01m41a06j6e2bs8j1dc9mf4p4k"
+      },
+      "edge_01m44e7t8yec4vn0e5ntc19z0d": {
+        "backward_condition": null,
+        "forward_condition": {
+          "condition": "The person clearly accepted one specific day and time for the appointment.",
+          "label": "Date agreed",
+          "type": "llm"
+        },
+        "source": "node_01m44e5ftqe8esq9nrfxc3afz0",
+        "target": "node_01m44e7t8wej6sjyr9zn3sbgdy"
+      },
+      "edge_01m44ecp5yegtvey71vrpn5z50": {
+        "backward_condition": null,
+        "forward_condition": {
+          "label": "Booking failed",
+          "successful": false,
+          "type": "result"
+        },
+        "source": "node_01m44e7t8wej6sjyr9zn3sbgdy",
+        "target": "node_01m46vt9cqqmycs7fr6xx49g58"
+      },
+      "edge_01m44egk9eej5rhavv02wqx30m": {
+        "backward_condition": null,
+        "forward_condition": {
+          "condition": "After three proposals the person has not accepted any day and time, or they said they cannot come to the office, or they want to stop before agreeing on a date.",
+          "label": "No date works",
+          "type": "llm"
+        },
+        "source": "node_01m44e5ftqe8esq9nrfxc3afz0",
+        "target": "node_01m46vt9cqqmycs7fr6xx49g58"
+      },
+      "edge_01m44f6sgke7nvabamryvsdpy1": {
+        "backward_condition": null,
+        "forward_condition": {
+          "label": "Booking succeeded",
+          "successful": true,
+          "type": "result"
+        },
+        "source": "node_01m44e7t8wej6sjyr9zn3sbgdy",
+        "target": "node_01m44f6sghej6r8tm45s8n7ey3"
+      },
+      "edge_01m44fcwnnedwbdgz7ypt2bqpr": {
+        "backward_condition": null,
+        "forward_condition": {
+          "label": null,
+          "type": "unconditional"
+        },
+        "source": "node_01m44f6sghej6r8tm45s8n7ey3",
+        "target": "node_01m42cdd1aemdvtmedemf14vw1"
+      },
+      "edge_01m454e9y7vrkcf9aq4sr62agc": {
+        "backward_condition": null,
+        "forward_condition": {
+          "label": null,
+          "type": "unconditional"
+        },
+        "source": "node_01m454e9y74mnfctxv67cgr9ek",
+        "target": "node_01m416bf4mesn8twb8p5k8b887"
+      },
+      "edge_01m45fbgz159dcgw3feggzev62": {
+        "backward_condition": null,
+        "forward_condition": {
+          "label": null,
+          "type": "unconditional"
+        },
+        "source": "node_01m45ht3af5w6ne9a13vypa17z",
+        "target": "node_01m457gsvczgsgag8ahkc11f4r"
+      },
+      "edge_01m45j3ey426twm9gbmx7g87wr": {
+        "backward_condition": null,
+        "forward_condition": {
+          "condition": "A usable cédula number was obtained but the person clearly refused the credit bureau check, or refused a second time after one explanation.",
+          "label": "Consent denied",
+          "type": "llm"
+        },
+        "source": "node_01m416bf4mesn8twb8p5k8b887",
+        "target": "node_01m45ht3af5w6ne9a13vypa17z"
+      },
+      "edge_01m463cemqrvwy1xj7v41mw76w": {
+        "backward_condition": null,
+        "forward_condition": {
+          "condition": "The person clearly says they want to stop the interview, has to leave, or prefers to continue another day. A short pause such as 'espere un momento' is not a stop.",
+          "label": "Wants to stop",
+          "type": "llm"
+        },
+        "source": "node_01m41a06j6e2bs8j1dc9mf4p4k",
+        "target": "node_01m463cemqz9rtvb0xcbwsdz6x"
+      },
+      "edge_01m463cemqytxjay2wa2m0chb9": {
+        "backward_condition": null,
+        "forward_condition": {
+          "label": null,
+          "type": "unconditional"
+        },
+        "source": "node_01m463cemqz9rtvb0xcbwsdz6x",
+        "target": "node_01m463cemq82b3bfb3a3xjf8fn"
+      },
+      "edge_01m463cemqyxqvdk59z0sf3c2q": {
+        "backward_condition": null,
+        "forward_condition": {
+          "condition": "The person clearly says they want to stop, cannot continue right now, or does not have their cédula at hand and prefers to continue another day. A short pause such as 'espere un momento' is not a stop.",
+          "label": "Wants to stop",
+          "type": "llm"
+        },
+        "source": "node_01m416bf4mesn8twb8p5k8b887",
+        "target": "node_01m463cemqz9rtvb0xcbwsdz6x"
+      },
+      "edge_01m46vnck1y09pnj6x3qxe6vs5": {
+        "backward_condition": null,
+        "forward_condition": {
+          "label": null,
+          "type": "unconditional"
+        },
+        "source": "node_01m46vt9cqqmycs7fr6xx49g58",
+        "target": "node_01m42cdd1aemdvtmedemf14vw1"
+      }
+    },
+    "nodes": {
+      "node_01m416bf4mesn8twb8p5k8b887": {
+        "additional_knowledge_base": [
+          {
+            "id": "K02boOSquTS6EiBa1Aif",
+            "name": "cedula_verification_prompt_v2.md",
+            "type": "text",
+            "usage_mode": "auto"
+          }
+        ],
+        "additional_prompt": "Goal of this step: get a usable cédula and the person's consent to check the credit bureaus.\n\n1. The first message already asked for a photo of the front of the cédula. A guideline is in your knowledge base.\n2. If after 3 photos you still have no visible ID, ask the person to say their full name and their cédula number slowly, then repeat the number back to confirm it.\n3. Once you have the ID, confirm the name in one sentence: \"Perfecto, ¿usted es Don Martín Rodríguez?\"\n4. Then ask for consent in one plain sentence: \"Don Martín, para seguir necesito su permiso para consultar su información en las centrales de riesgo. ¿Me autoriza?\" If they hesitate, explain once that it is a normal step the bank must do, it costs nothing and does not commit them to anything, then ask again.\n5. A clear yes: this step is done. A clear no, or a second no: do not insist.\n\nNever guess digits and never move on with a partial number.",
+        "additional_tool_ids": [],
+        "conversation_config": {
+          "agent": {
+            "prompt": {
+              "built_in_tools": {},
+              "custom_llm": null,
+              "llm": "claude-sonnet-5-5",
+              "prompt": null
+            }
+          },
+          "conversation": {
+            "client_events": null
+          },
+          "tts": {
+            "voice_id": null
+          },
+          "turn": {
+            "retranscribe_on_turn_timeout": null,
+            "speculative_turn": null,
+            "spelling_patience": null,
+            "turn_eagerness": null
+          }
+        },
+        "edge_order": [
+          "edge_01m429vymxe8nbxcwavx661bjr",
+          "edge_01m42a54x9et4arg5h08ph43as",
+          "edge_01m45j3ey426twm9gbmx7g87wr",
+          "edge_01m463cemqyxqvdk59z0sf3c2q"
+        ],
+        "entry_behavior": "auto",
+        "forced_tool_name": null,
+        "label": "ID and consent",
+        "parent_subgraph_id": null,
+        "position": {
+          "x": 142.11538461538464,
+          "y": 174.26923076923077
+        },
+        "type": "override_agent"
+      },
+      "node_01m41a06j6e2bs8j1dc9mf4p4k": {
+        "additional_knowledge_base": [
+          {
+            "id": "DdoUE9wzUJkSnbZuHl7P",
+            "name": "questionnaire.md",
+            "type": "file",
+            "usage_mode": "auto"
+          }
+        ],
+        "additional_prompt": "Goal of this step: run the interview in your knowledge base (questionnaire.md) and file the case.\n\n- Follow the questionnaire's three parts, in order, with its limits. Skip anything the person already told you. One question per section.\n- Keep answers in the person's own words and units. Do not calculate or convert aloud.\n- Try to give simple and easy to understand rates avoid asking for complex rates e.g. money per bottle per month. It's preferable to simply say Money per month. Or money per bottle and in a separate question get the bottles sold each month.\n- When the three parts are complete, or their limits are reached, ask the closing question from the questionnaire.\n- Then call bpmn_create_case once, with every question you asked and every answer you got in this conversation copied literally, including the ID and consent steps. If it returns an error, call it again, up to 3 times. Do not mention this to the person; if you need to fill the silence, say only that you are saving their information.",
+        "additional_tool_ids": [
+          "tool_3401m44qgsebeqybmxv4k5fvwyv8"
+        ],
+        "conversation_config": {
+          "agent": {
+            "prompt": {
+              "built_in_tools": {},
+              "custom_llm": null,
+              "llm": "claude-opus-5-5",
+              "prompt": null
+            }
+          },
+          "conversation": {
+            "client_events": [
+              "audio",
+              "user_transcript",
+              "agent_response",
+              "agent_response_correction"
+            ]
+          },
+          "tts": {
+            "voice_id": null
+          },
+          "turn": {
+            "retranscribe_on_turn_timeout": null,
+            "speculative_turn": false,
+            "spelling_patience": null,
+            "turn_eagerness": null
+          }
+        },
+        "edge_order": [
+          "edge_01m42a7qfbesz9yaey9c4edmvn",
+          "edge_01m463cemqrvwy1xj7v41mw76w"
+        ],
+        "entry_behavior": "auto",
+        "forced_tool_name": null,
+        "label": "Questionnaire and case filing",
+        "parent_subgraph_id": null,
+        "position": {
+          "x": 144.0,
+          "y": 784.5
+        },
+        "type": "override_agent"
+      },
+      "node_01m429zhw3e4qvycbe7f8m334c": {
+        "edge_order": [],
+        "exit_slot": null,
+        "parent_subgraph_id": null,
+        "position": {
+          "x": 147.27018121036423,
+          "y": 1753.933976060295
+        },
+        "return_when_nested": true,
+        "type": "end"
+      },
+      "node_01m42a54x6eyzbcamxsj3mw05s": {
+        "edge_order": [
+          "edge_01m42cdxbxeqqs5vk2zn6szfpk",
+          "edge_01m42cq971ez9998qxjgcgvd2t",
+          "edge_01m42crzz2efjrn5f10te9ahdy"
+        ],
+        "parent_subgraph_id": null,
+        "position": {
+          "x": 142.0,
+          "y": 483.5
+        },
+        "system_tool": null,
+        "tools": [
+          {
+            "schema_overrides": null,
+            "tool_id": "tool_8401m42d4qmqecv9b3s3aebdbbjg"
+          }
+        ],
+        "type": "tool"
+      },
+      "node_01m42cdd1aemdvtmedemf14vw1": {
+        "edge_order": [
+          "edge_01m42cdjc0e0cbqts15f23qtqj"
+        ],
+        "parent_subgraph_id": null,
+        "position": {
+          "x": 143.69470080378983,
+          "y": 1645.9425853366447
+        },
+        "system_tool": null,
+        "tools": [
+          {
+            "schema_overrides": null,
+            "tool_id": "tool_5201m44b36nmeb1t21gejh5hxm8c"
+          }
+        ],
+        "type": "tool"
+      },
+      "node_01m42crzyzexx88ra0d2qjb05z": {
+        "additional_knowledge_base": [],
+        "additional_prompt": "",
+        "additional_tool_ids": [],
+        "conversation_config": {
+          "agent": {
+            "prompt": {
+              "built_in_tools": {},
+              "llm": null,
+              "prompt": null
+            }
+          },
+          "tts": {
+            "voice_id": null
+          },
+          "turn": {
+            "retranscribe_on_turn_timeout": null,
+            "speculative_turn": null,
+            "spelling_patience": null,
+            "turn_eagerness": null
+          }
+        },
+        "edge_order": [
+          "edge_01m44bwnhpeq0rq8vztx9m8vt9"
+        ],
+        "label": "Low score goodbye",
+        "message": {
+          "text": "Por ahora no podemos seguir con su solicitud debido a su perfil de riesgo. Puede volver a intentarlo dentro de un mes. Gracias por comunicarse.",
+          "text_translations": {},
+          "type": "literal"
+        },
+        "parent_subgraph_id": null,
+        "position": {
+          "x": 483.2692307692308,
+          "y": 642.7692307692306
+        },
+        "type": "say",
+        "wait_for_speech_completion": true,
+        "wait_for_user_response": false
+      },
+      "node_01m44bwnhkedvvm753g1g61esa": {
+        "edge_order": [],
+        "exit_slot": null,
+        "parent_subgraph_id": null,
+        "position": {
+          "x": 483.2692307692308,
+          "y": 787.7307692307692
+        },
+        "return_when_nested": true,
+        "type": "end"
+      },
+      "node_01m44c2bczenmtzcxjyhbhkcyx": {
+        "additional_knowledge_base": [],
+        "additional_prompt": "",
+        "additional_tool_ids": [],
+        "conversation_config": {
+          "agent": {
+            "prompt": {
+              "built_in_tools": {},
+              "llm": null,
+              "prompt": null
+            }
+          },
+          "tts": {
+            "voice_id": null
+          },
+          "turn": {
+            "retranscribe_on_turn_timeout": null,
+            "speculative_turn": null,
+            "spelling_patience": null,
+            "turn_eagerness": null
+          }
+        },
+        "edge_order": [
+          "edge_01m44c40sne1wbcsdzz0amv8dn"
+        ],
+        "label": "ID not validated goodbye",
+        "message": {
+          "text": "No he podido validar su cédula de ciudadanía. Por favor vuelva a intentarlo más tarde. Gracias por comunicarse con el Banco Agrario.",
+          "text_translations": {},
+          "type": "literal"
+        },
+        "parent_subgraph_id": null,
+        "position": {
+          "x": 558.7692307692307,
+          "y": 179.6153846153846
+        },
+        "type": "say",
+        "wait_for_speech_completion": true,
+        "wait_for_user_response": false
+      },
+      "node_01m44c40sjepfve0xn6f1q1q3z": {
+        "edge_order": [],
+        "exit_slot": null,
+        "parent_subgraph_id": null,
+        "position": {
+          "x": 562.9999999999998,
+          "y": 304.96153846153857
+        },
+        "return_when_nested": true,
+        "type": "end"
+      },
+      "node_01m44cm435ehm8bj2ak614n5bg": {
+        "edge_order": [
+          "edge_01m44cnydceaa94nsb33pfd2v6"
+        ],
+        "label": "Save ID number",
+        "parent_subgraph_id": null,
+        "position": {
+          "x": 142.0,
+          "y": 356.0
+        },
+        "type": "update_state",
+        "updates": [
+          {
+            "expression": {
+              "prompt": "The person's cédula number as read from the ID photo or as dictated and confirmed by them: digits only, 6 to 10 digits, no dots or spaces. Empty string if it was never obtained. Never invent digits.",
+              "type": "llm",
+              "value_schema": {
+                "description": "The person's cédula number as read from the ID photo or as dictated and confirmed by them: digits only, 6 to 10 digits, no dots or spaces. Empty string if it was never obtained. Never invent digits.",
+                "enum": null,
+                "type": "string"
+              }
+            },
+            "required": true,
+            "type": "dynamic_variable",
+            "variable_name": "user_id"
+          }
+        ]
+      },
+      "node_01m44cz8g0ev7rtdn7rn6mq18z": {
+        "edge_order": [
+          "edge_01m44d0v45e309kg8em93vgfcd"
+        ],
+        "label": "Flag score check failed",
+        "parent_subgraph_id": null,
+        "position": {
+          "x": -146.3269230769231,
+          "y": 550.8461538461539
+        },
+        "type": "update_state",
+        "updates": [
+          {
+            "expression": {
+              "type": "boolean_literal",
+              "value": true
+            },
+            "required": true,
+            "type": "dynamic_variable",
+            "variable_name": "reviewer_agent_validate_credit_score"
+          },
+          {
+            "expression": {
+              "type": "string_literal",
+              "value": "To be assessed"
+            },
+            "required": true,
+            "type": "dynamic_variable",
+            "variable_name": "preliminary_eligibility"
+          }
+        ]
+      },
+      "node_01m44e5ftqe8esq9nrfxc3afz0": {
+        "additional_knowledge_base": [],
+        "additional_prompt": "Goal of this step: agree on a day and time for the person to meet an advisor at the bank office.\n\n- First ask what suits them: which days they come to town, and whether morning or afternoon is easier.\n- Then call google_calendar_check_availability for the next 5 business days, Monday to Friday, 08:00 to 17:00 Colombia time (America/Bogota, UTC-5). Never propose today, Saturdays or Sundays.\n- Offer at most two concrete options at a time, in plain words: \"el martes a las nueve de la mañana\". Never read a date as a code.\n- When they accept one, repeat it once to confirm, and this step is done.\n- If after three proposals nothing works, or they say they cannot come, stop proposing. Say that the contact center will call them to arrange it, and this step is done.",
+        "additional_tool_ids": [
+          "tool_8501m44dchz0fkhbz188fehe2ejm"
+        ],
+        "conversation_config": {
+          "agent": {
+            "prompt": {
+              "built_in_tools": {},
+              "llm": null,
+              "prompt": null
+            }
+          },
+          "conversation": {
+            "client_events": null
+          },
+          "tts": {
+            "voice_id": null
+          },
+          "turn": {
+            "retranscribe_on_turn_timeout": null,
+            "speculative_turn": null,
+            "spelling_patience": null,
+            "turn_eagerness": null
+          }
+        },
+        "edge_order": [
+          "edge_01m44e7t8yec4vn0e5ntc19z0d",
+          "edge_01m44egk9eej5rhavv02wqx30m"
+        ],
+        "entry_behavior": "auto",
+        "forced_tool_name": null,
+        "label": "Schedule appointment",
+        "parent_subgraph_id": null,
+        "position": {
+          "x": 144.0,
+          "y": 1109.0
+        },
+        "type": "override_agent"
+      },
+      "node_01m44e7t8wej6sjyr9zn3sbgdy": {
+        "edge_order": [
+          "edge_01m44ecp5yegtvey71vrpn5z50",
+          "edge_01m44f6sgke7nvabamryvsdpy1"
+        ],
+        "parent_subgraph_id": null,
+        "position": {
+          "x": 145.61538461538464,
+          "y": 1297.3461538461538
+        },
+        "system_tool": null,
+        "tools": [
+          {
+            "schema_overrides": null,
+            "tool_id": "tool_0601m41c4hekeavtk90kbwmc28qs"
+          }
+        ],
+        "type": "tool"
+      },
+      "node_01m44f6sghej6r8tm45s8n7ey3": {
+        "additional_knowledge_base": [],
+        "additional_prompt": "",
+        "additional_tool_ids": [],
+        "conversation_config": {
+          "agent": {
+            "prompt": {
+              "built_in_tools": {},
+              "llm": null,
+              "prompt": null
+            }
+          },
+          "tts": {
+            "voice_id": null
+          },
+          "turn": {
+            "retranscribe_on_turn_timeout": null,
+            "speculative_turn": null,
+            "spelling_patience": null,
+            "turn_eagerness": null
+          }
+        },
+        "edge_order": [
+          "edge_01m44fcwnnedwbdgz7ypt2bqpr"
+        ],
+        "label": "Confirm appointment",
+        "message": {
+          "prompt": "Confirm that the appointment at the bank office is scheduled. Say the day and time from {{meeting_date}} in natural Colombian Spanish, for example 'el lunes 5 de octubre a las 9 de la mañana'. The value is already in Colombia time; never read it as a code or in English. Use 'usted'. Remind them to bring their cédula. Two short sentences, then thank them and say goodbye warmly.",
+          "type": "prompt"
+        },
+        "parent_subgraph_id": null,
+        "position": {
+          "x": 145.26923076923072,
+          "y": 1490.261028583232
+        },
+        "type": "say",
+        "wait_for_speech_completion": true,
+        "wait_for_user_response": false
+      },
+      "node_01m454e9y74mnfctxv67cgr9ek": {
+        "edge_order": [
+          "edge_01m454e9y7vrkcf9aq4sr62agc"
+        ],
+        "label": "Init variables",
+        "parent_subgraph_id": null,
+        "position": {
+          "x": 142.11538461538464,
+          "y": 90.0
+        },
+        "type": "update_state",
+        "updates": [
+          {
+            "expression": {
+              "type": "string_literal",
+              "value": "3 2 0, 8 0 1, 9 3, 3 5"
+            },
+            "required": true,
+            "type": "dynamic_variable",
+            "variable_name": "contact_center_phone"
+          },
+          {
+            "expression": {
+              "type": "string_literal",
+              "value": "Preliminarily eligible"
+            },
+            "required": true,
+            "type": "dynamic_variable",
+            "variable_name": "preliminary_eligibility"
+          },
+          {
+            "expression": {
+              "type": "boolean_literal",
+              "value": false
+            },
+            "required": true,
+            "type": "dynamic_variable",
+            "variable_name": "reviewer_agent_validate_credit_score"
+          },
+          {
+            "expression": {
+              "type": "string_literal",
+              "value": ""
+            },
+            "required": true,
+            "type": "dynamic_variable",
+            "variable_name": "user_id"
+          },
+          {
+            "expression": {
+              "type": "string_literal",
+              "value": ""
+            },
+            "required": true,
+            "type": "dynamic_variable",
+            "variable_name": "case_page_id"
+          },
+          {
+            "expression": {
+              "type": "string_literal",
+              "value": ""
+            },
+            "required": true,
+            "type": "dynamic_variable",
+            "variable_name": "case_url"
+          },
+          {
+            "expression": {
+              "type": "string_literal",
+              "value": ""
+            },
+            "required": true,
+            "type": "dynamic_variable",
+            "variable_name": "meeting_date"
+          }
+        ]
+      },
+      "node_01m457gsvczgsgag8ahkc11f4r": {
+        "edge_order": [],
+        "exit_slot": null,
+        "parent_subgraph_id": null,
+        "position": {
+          "x": -356.0,
+          "y": 308.0
+        },
+        "return_when_nested": true,
+        "type": "end"
+      },
+      "node_01m45ht3af5w6ne9a13vypa17z": {
+        "additional_knowledge_base": [],
+        "additional_prompt": "",
+        "additional_tool_ids": [],
+        "conversation_config": {
+          "agent": {
+            "prompt": {
+              "built_in_tools": {}
+            }
+          },
+          "tts": {},
+          "turn": {}
+        },
+        "edge_order": [
+          "edge_01m45fbgz159dcgw3feggzev62"
+        ],
+        "label": "Consent declined goodbye",
+        "message": {
+          "text": "Entiendo, y respeto su decisión. Sin esa autorización no podemos seguir con la solicitud por este medio. Si cambia de opinión, puede llamarnos al centro de atención, al número {{contact_center_phone}}. Gracias por comunicarse con el Banco Agrario.",
+          "text_translations": {},
+          "type": "literal"
+        },
+        "parent_subgraph_id": null,
+        "position": {
+          "x": -356.0,
+          "y": 170.0
+        },
+        "type": "say",
+        "wait_for_speech_completion": false,
+        "wait_for_user_response": false
+      },
+      "node_01m463cemq82b3bfb3a3xjf8fn": {
+        "edge_order": [],
+        "exit_slot": null,
+        "parent_subgraph_id": null,
+        "position": {
+          "x": -544.0,
+          "y": 672.0
+        },
+        "return_when_nested": true,
+        "type": "end"
+      },
+      "node_01m463cemqz9rtvb0xcbwsdz6x": {
+        "additional_knowledge_base": [],
+        "additional_prompt": "",
+        "additional_tool_ids": [],
+        "conversation_config": {
+          "agent": {
+            "prompt": {
+              "built_in_tools": {}
+            }
+          },
+          "tts": {},
+          "turn": {}
+        },
+        "edge_order": [
+          "edge_01m463cemqytxjay2wa2m0chb9"
+        ],
+        "label": "Stop requested goodbye",
+        "message": {
+          "text": "No se preocupe, lo dejamos hasta aquí por hoy. Cuando quiera seguir, me habla otra vez por aquí y tenga a la mano su cédula. Muchas gracias por su tiempo, que esté muy bien.",
+          "text_translations": {},
+          "type": "literal"
+        },
+        "parent_subgraph_id": null,
+        "position": {
+          "x": -552.0,
+          "y": 530.0
+        },
+        "type": "say",
+        "wait_for_speech_completion": true,
+        "wait_for_user_response": false
+      },
+      "node_01m46vt9cqqmycs7fr6xx49g58": {
+        "additional_knowledge_base": [],
+        "additional_prompt": "",
+        "additional_tool_ids": [],
+        "conversation_config": {
+          "agent": {
+            "prompt": {
+              "built_in_tools": {}
+            }
+          },
+          "tts": {},
+          "turn": {}
+        },
+        "edge_order": [
+          "edge_01m46vnck1y09pnj6x3qxe6vs5"
+        ],
+        "label": "Contact center callback",
+        "message": {
+          "text": "No se preocupe. Un asesor del centro de atención lo va a llamar para coordinar la cita. Si prefiere, también puede llamarnos al número {{contact_center_phone}}. Gracias por comunicarse con el Banco Agrario.",
+          "text_translations": {},
+          "type": "literal"
+        },
+        "parent_subgraph_id": null,
+        "position": {
+          "x": 589.9205249310911,
+          "y": 1109.4206876294102
+        },
+        "type": "say",
+        "wait_for_speech_completion": false,
+        "wait_for_user_response": false
+      },
+      "start_node": {
+        "edge_order": [
+          "edge_01m416bf4re2n87zpx2tvpt34r"
+        ],
+        "parent_subgraph_id": null,
+        "position": {
+          "x": 148.11538461538464,
+          "y": -76.88461538461539
+        },
+        "type": "start"
+      }
+    },
+    "prevent_subagent_loops": true,
+    "subgraphs": {}
+  }
+}

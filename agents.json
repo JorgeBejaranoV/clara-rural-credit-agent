@@ -1,0 +1,10 @@
+{
+    "agents": [
+        {
+            "config": "agent_configs/My-Agent.json",
+            "id": "agent_7701m3whewsjeca951dc2xphf7cs",
+            "branch_id": "agtbrch_3401m3whey4detzrnaxw4fthrcv8",
+            "version_id": "agtvrsn_0001m46kr4b9eyxbmek71mjpzg9j"
+        }
+    ]
+}
