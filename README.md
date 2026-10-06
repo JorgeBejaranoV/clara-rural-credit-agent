@@ -2,8 +2,6 @@
 
 "Crédito rural por voz" for Banco Agrario: an ElevenLabs Conversational AI agent that pre-screens rural credit applicants over WhatsApp (voice notes, text, ID photos) or the web widget, files the case in Notion and books an appointment with a human advisor.
 
-Built as a demo for a Solutions Engineer take-home. Not a production system.
-
 ## Repository layout
 
 | Path | What it is |
